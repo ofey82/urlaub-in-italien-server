@@ -52,7 +52,16 @@ exports.updateStory = async (req, res) => {
     story.text = text;
     await story.save();
 
-    res.json(story);
+    const updatedStory = await Story.findByPk(story.id, {
+      include: [
+        {
+          model: Photo,
+          through: { attributes: [] }
+        }
+      ]
+    });
+
+    res.json(updatedStory);
   } catch (error) {
     console.error('Error updating story:', error);
     res.status(500).json({ error: 'Internal server error' });
